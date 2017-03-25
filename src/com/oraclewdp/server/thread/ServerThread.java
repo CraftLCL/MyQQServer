@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.Properties;
 
 import javax.swing.JTextArea;
 
@@ -44,23 +45,35 @@ public class ServerThread implements Runnable {
 
 			// 创建对象流
 			ObjectInputStream objectInputStream=new ObjectInputStream(in);
-			request = (Request)objectInputStream.readObject();
+
+            while (this.runnable){
+
+                // 在这里会存在一个IO阻塞
+
+                // 从Request对象中获取客户端所请求的服务名字
+                request = (Request)objectInputStream.readObject();
+                String serviceName=request.getRequestServiceName();
 
 
-			// 在这里会存在一个IO阻塞
+                // 从服务器运行状态类中获取Properties对象，并取出对应的键的相应的值
+                String className= ServerRunStatus.SERVICEPROPERTIES.getProperty(serviceName);
 
-			// 从Request对象中获取客户端所请求的服务名字
+                // 如果此时的serviceName的值是Register，那么将取出com..service.impl.RegisterService
+                // 并通过Class.forName方法获取到对应的一个类
+                Class myclass=Class.forName(className);
+
+                // 通过serviceClass的newInstance方法，调用这个类的无参的构造方法，并得到一个实例
+                ServerService serverService =(ServerService) myclass.newInstance();
+                // 将这个实例转型为ServerService类型
+                // 由此可以得出com..service.impl.RegisterServicen必然是实现了ServerService接口的一个类，所以才可以强转
+
+                // 调用实例的service方法
+                serverService.service(request,socket,infoText,this);
 
 
-			// 从服务器运行状态类中获取Properties对象，并取出对应的键的相应的值
-			// 如果此时的serviceName的值是Register，那么将取出com..service.impl.RegisterService
-			// 并通过Class.forName方法获取到对应的一个类
+            }
 
-			// 通过serviceClass的newInstance方法，调用这个类的无参的构造方法，并得到一个实例
-			// 将这个实例转型为ServerService类型
-			// 由此可以得出com..service.impl.RegisterServicen必然是实现了ServerService接口的一个类，所以才可以强转
 
-			// 调用实例的service方法
 
 		} catch (Exception e) {
 			exceptionMessage = e.getMessage() + "\n";

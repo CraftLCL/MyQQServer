@@ -25,21 +25,25 @@ public class Server implements Runnable {
 
 	@Override
 	public void run() {
-		/*
 		ServerSocket server = null;
 		try {
 			// 创建服务器端的ServerSocket对象，并指定端口号
+			server=new ServerSocket(8989);
 
 			this.infoText.append("正在等待来自于客户端的连接\n");
 			while (runnable) {
 				// 监听来自于客户端的连接
-
+				Socket socket= server.accept();
 				// 从连接中获取客户端的IP地址+端口号，组成一个键的值
+				String remoteHost = socket.getInetAddress().getHostAddress()+":"+socket.getPort();
+
 
 				this.infoText.append("获取到来自【" + remoteHost + "】的连接\n");
 				// 创建服务器端线程对象
+                // 创建线程对象
+                Thread thread=new Thread(new ServerThread(socket,infoText));
+                thread.start();
 
-				// 创建线程对象
 
 				this.infoText.append("启动【" + remoteHost + "】的线程\n");
 				// 启动线程
@@ -49,7 +53,6 @@ public class Server implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		*/
 	}
 
 	public void shutDown() {

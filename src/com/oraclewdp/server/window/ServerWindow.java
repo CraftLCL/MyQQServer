@@ -3,6 +3,8 @@ package com.oraclewdp.server.window;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -52,7 +54,9 @@ public class ServerWindow extends JFrame {
 			String actionCommand = e.getActionCommand();
 			if (actionCommand.equals("1")) {
 				//添加代码，创建服务器端主线程对象，并启动服务器主线程。
-
+				Thread thread=new Thread(server,"服务器的主线程");
+				infoText.append("服务器主线程启动\n");
+				thread.start();
 
 
 			}else if(actionCommand.equals("2")){
