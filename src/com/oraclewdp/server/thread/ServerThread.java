@@ -39,15 +39,15 @@ public class ServerThread implements Runnable {
 		Request request = null;
 
 		try {
-			// 从客户端的连接中获取输入流
-			in= socket.getInputStream();
 
-
-			// 创建对象流
-			ObjectInputStream objectInputStream=new ObjectInputStream(in);
 
             while (this.runnable){
+				// 从客户端的连接中获取输入流
+				in= socket.getInputStream();
 
+
+				// 创建对象流
+				ObjectInputStream objectInputStream=new ObjectInputStream(in);
                 // 在这里会存在一个IO阻塞
 
                 // 从Request对象中获取客户端所请求的服务名字

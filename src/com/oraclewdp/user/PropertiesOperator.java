@@ -9,10 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import com.oraclewdp.bean.User;
 
@@ -44,6 +41,8 @@ public class PropertiesOperator {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			flag=false;
+		}catch (NullPointerException e){
+			flag=false;
 		}
 
 		return flag;
@@ -51,7 +50,26 @@ public class PropertiesOperator {
 
 	public static List<User> getFriendList(int id) {
 		// 返回以参数ID为名字的资源文件中好友列表
-		return null;
+		String  userPath=System.getProperty("user.dir")+"/src/com/oraclewdp/user/"+id+".properties";
+		Properties properties=new Properties();
+		ArrayList<User> userArrayList = new ArrayList<>();
+		try {
+			properties.load(new FileInputStream(userPath));
+			Set<Map.Entry<Object, Object>> entries = properties.entrySet();
+			for (Map.Entry<Object,Object> entry:entries
+				 ) {
+				User user = new User();
+				user.setId(Integer.parseInt(entry.getKey().toString()));
+				user.setName(entry.getValue().toString());
+				userArrayList.add(user);
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+
+		return userArrayList;
 	}
 
 	public static boolean isFriend(int userId, int targetUserid){

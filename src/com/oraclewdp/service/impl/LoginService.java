@@ -42,7 +42,7 @@ public class LoginService implements ServerService {
 
 
 
-				//sendOnlineMessage(user);
+				sendOnlineMessage(user);
 
 
 
